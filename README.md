@@ -1,67 +1,96 @@
+
 # 📦 Supply Chain Cost Optimizer
 
-An interactive application that uses **Matrix Chain Multiplication (MCM) with Dynamic Programming** to determine the minimum-cost order for performing a sequence of matrix-based transformation stages.
+An interactive application that uses **Matrix Chain Multiplication (MCM) with Dynamic Programming** to find the minimum-cost multiplication order for sequential supply-chain transformation stages.
 
-The project models a manufacturing/supply-chain process where a product passes through multiple sequential stages. Each stage is represented as a matrix, and the application finds the most cost-efficient way to combine these stages.
-
----
+The application also supports **What-If Analysis and Scenario Comparison**, allowing users to evaluate different stage configurations and compare their computational costs.
 
 ## 📌 Problem Statement
 
-In a supply chain or manufacturing process, multiple transformation stages may need to be performed sequentially.
+In supply-chain and manufacturing processes, multiple transformation stages may need to be executed sequentially.
 
-Although matrix multiplication is associative, different multiplication orders can require different numbers of scalar multiplications.
-
-For example:
-(A1 × A2) × A3 and A1 × (A2 × A3) produce the same final result, but their computational costs may be different.
-
----
+Although matrix multiplication is associative, different parenthesizations can require different numbers of scalar multiplications. Finding the optimal order reduces computational cost without changing the final result.
 
 ## 🎯 Objectives
 
-- Model sequential supply-chain transformation stages as a matrix chain.
-- Determine the minimum-cost multiplication order using Matrix Chain Multiplication.
-- Recover and display the optimal parenthesization.
-- Compare the optimized cost with a fixed left-to-right multiplication order.
-- Calculate the total cost saved and savings percentage.
-
----
+- Model sequential supply-chain stages as matrices.
+- Find the minimum-cost multiplication order using Dynamic Programming.
+- Display the optimal parenthesization and DP cost table.
+- Compare naive and optimized multiplication costs.
+- Calculate cost savings and savings percentage.
+- Evaluate and compare multiple supply-chain scenarios.
 
 ## ✨ Key Features
 
-- Enter the number of transformation stages.
-- Provide custom names for each stage.
-- Define matrix dimensions for every stage.
+- Configure 2–10 transformation stages.
+- Enter custom stage names and matrix dimensions.
 - Validate matrix dimension compatibility.
-- Find the optimal multiplication order using Dynamic Programming.
+- Optimize multiplication order using MCM.
 - Display the optimal parenthesization.
-- Display the Dynamic Programming cost table.
-- Compare naive and optimized multiplication costs.
+- Visualize the Dynamic Programming cost table.
+- Compare naive and optimal multiplication costs.
 - Calculate cost savings and savings percentage.
-- Visualize the cost comparison using a bar chart.
-- Display time and space complexity of the approaches.
+- **What-If Analysis:** Save and evaluate different stage configurations.
+- **Scenario Comparison:** Compare costs, savings, and optimal orders across saved scenarios.
+- Compare each scenario's optimal cost against the first saved baseline.
+- Visualize naive and optimal costs using a bar chart.
+- Display algorithm time and space complexity.
 
----
+## 🧠 Algorithm Approach
 
-## 🧠 Approach
+### 1. Naive Left-to-Right Multiplication
 
-The project compares two approaches:
+Calculates the scalar multiplication cost for one fixed multiplication order.
 
-- **Naive Left-to-Right:** Calculates the cost of multiplying the matrices in one fixed order.
-- **Matrix Chain Multiplication:** Uses Dynamic Programming to evaluate different multiplication orders and find the one with minimum cost.
+### 2. Matrix Chain Multiplication with Dynamic Programming
 
-The optimal parenthesization is recovered using the split positions stored during the Dynamic Programming process.
+Evaluates different split positions and stores the minimum cost for each matrix-chain subproblem.
 
-## 📊 Complexity Analysis
+The recurrence is:
+
+`m[i][j] = min(m[i][k] + m[k+1][j] + p[i-1] × p[k] × p[j])`
+
+Here, `p` represents the matrix dimensions, and `k` represents a possible split position using the standard 1-based mathematical indexing.
+
+The optimal parenthesization is reconstructed using the stored split positions.
+
+## 📊 What-If Analysis and Scenario Comparison
+
+Users can save multiple valid configurations and compare them to understand how changes in stage dimensions affect computational cost.
+
+The comparison table displays:
+
+- Number of stages
+- Naive multiplication cost
+- Optimal multiplication cost
+- Cost saved and savings percentage
+- Optimal parenthesization
+- Change in optimal cost relative to the baseline
+
+The first saved scenario acts as the baseline. A positive change indicates a higher cost, while a negative change indicates a lower cost.
+
+Saved scenarios are maintained in Streamlit session state and are not permanently stored in a database.
+
+## ⏱️ Complexity Analysis
+
+Let `n` be the number of matrices.
 
 | Approach | Time Complexity | Space Complexity |
-|---|---:|---:|
+|---|---|---|
 | Naive Left-to-Right | O(n) | O(1) |
 | MCM Dynamic Programming | O(n³) | O(n²) |
 
-The naive approach calculates only one fixed order, while MCM searches for the minimum-cost order.
+MCM evaluates all relevant subchains and split positions, resulting in O(n³) time and O(n²) space complexity.
 
-## 🏗️ Project Structure
+## 🛠️ Technologies Used
+
+- Python
+- Streamlit
+- Pandas
+- Dynamic Programming
+- Matrix Chain Multiplication
+
+## 📁 Project Structure
 
 ```text
 Supply-Chain-Cost-Optimizer/
@@ -75,43 +104,66 @@ Supply-Chain-Cost-Optimizer/
 ├── requirements.txt
 ├── README.md
 └── .gitignore
-
-
-### 6. Technologies
-```markdown
-## 🛠️ Technologies Used
-
-- Python
-- Streamlit
-- Pandas
-- Dynamic Programming
-- Matrix Chain Multiplication
+```
 
 ## 🚀 How to Run
+
+### Prerequisites
+
+- Python installed
+- Git installed
+
+### Installation
 
 ```bash
 git clone https://github.com/harinigangireddy2407/Supply-Chain-Cost-Optimizer.git
 cd Supply-Chain-Cost-Optimizer
+
+python -m venv venv
+```
+
+Activate the virtual environment on Windows:
+
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+Install dependencies and run the application:
+
+```bash
 pip install -r requirements.txt
 streamlit run app.py
+```
 
-
-### 8. Example
-```markdown
 ## 🧪 Example
 
-For the following matrix chain:
+Consider the following matrix dimensions:
 
-| Stage | Dimension |
+| Stage | Dimensions |
 |---|---|
 | Stage 1 | 40 × 20 |
 | Stage 2 | 20 × 30 |
 | Stage 3 | 30 × 10 |
 | Stage 4 | 10 × 30 |
 
-The application produces:
+The expected results are:
 
 - **Naive Cost:** 48,000
-- **Optimal Cost:** 26,000
-- **Cost Saved:** 22,000
-- **Savings:** 45.83%
+- **Optimal Cost:** 36,000
+- **Cost Saved:** 12,000
+- **Savings:** 25%
+
+The application finds a lower-cost parenthesization using Dynamic Programming.
+
+## 🔮 Future Enhancements
+
+- Export scenario comparisons to CSV or PDF.
+- Persist scenarios using a database.
+- Support larger supply-chain configurations.
+- Add visual explanations of the optimal multiplication order.
+
+## 👩‍💻 Author
+
+**Harini Gangireddy**
+
+GitHub: [harinigangireddy2407](https://github.com/harinigangireddy2407)
